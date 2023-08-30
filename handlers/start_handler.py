@@ -1,10 +1,17 @@
-import logging
 from aiogram import types
-from aiogram.types import ParseMode
+
+from config import UserState
+from sqlite import check_user_existence
 
 
-async def greet(message: types.Message):
-    await message.reply("Hey there!", parse_mode=ParseMode.MARKDOWN)
+async def start(message: types.Message):
+    from main import show_keyboard
 
-
-logging.basicConfig(level=logging.INFO)
+    user_id = message.from_user.id
+    if check_user_existence(user_id):
+        await message.answer("Welcome back :3", reply_markup=show_keyboard())
+    else:
+        await message.answer(
+            "Let's start! Firstly send me your nickname on itch.io to follow the games from your collection"
+        )
+        await UserState.user_name.set()
