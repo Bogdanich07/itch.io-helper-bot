@@ -2,52 +2,58 @@ import sqlite3 as sq
 
 
 def create_table():
-    db = sq.connect("data.db")
-    cursor = db.cursor()
+    """Create a "users" table in "data.db" if it doesn't exist"""
 
-    cursor.execute(
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER,
+                user_name TEXT,
+                games_user_follows TEXT
+            )
         """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY,
-            user_id INTEGER,
-            user_name TEXT
-            games_user_follows TEXT
         )
-    """
-    )
-
-    db.commit()
-    db.close()
+        db.commit()
 
 
-def insert_user(user_id, user_name):
-    db = sq.connect("data.db")
-    cursor = db.cursor()
+def insert_user(user_id, user_name, games_user_follows=None):
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO users (user_id, user_name, games_user_follows) VALUES (?, ?, ?)",
+            (user_id, user_name, games_user_follows),
+        )
+        db.commit()
 
-    cursor.execute(
-        "INSERT INTO users (user_id, user_name) VALUES (?, ?)", (user_id, user_name)
-    )
-
-    db.commit()
-    db.close()
 
 def update_user_name(user_id, user_name):
-    db = sq.connect("data.db")
-    cursor = db.cursor()
+    """Connect to "data.db" and update the username of a user based on their ID"""
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
+        cursor.execute(
+            "UPDATE users SET user_name = ? WHERE user_id = ?", (user_name, user_id)
+        )
+        db.commit()
 
-    cursor.execute(
-        "UPDATE users SET user_name = ? WHERE user_id = ?", (user_name, user_id)
-    )
-    db.commit()
+
+def update_follows(user_id, games_user_follows):
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
+        cursor.execute(
+            "UPDATE users SET games_user_follows = ? WHERE user_id = ?",
+            (games_user_follows, user_id),
+        )
+        db.commit()
 
 
 def check_user_existence(user_id):
-    conn = sq.connect("data.db")
-    cursor = conn.cursor()
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
 
-    cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
-    result = cursor.fetchone()
-
-    conn.close()
+        cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+        result = cursor.fetchone()
 
     return result is not None

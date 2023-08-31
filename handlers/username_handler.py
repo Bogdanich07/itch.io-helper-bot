@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from sqlite import insert_user
+from config import UserState
 import info
 
 
@@ -17,7 +18,8 @@ async def get_username(message: types.Message, state: FSMContext):
         if info.get_titles(user_name):
             await follow_games_handler(message, user_name)
 
-            await state.finish()
+            await state.update_data(username=message.text)
+            await UserState.next()
         else:
             await empty_collection_handler(message)
     else:
