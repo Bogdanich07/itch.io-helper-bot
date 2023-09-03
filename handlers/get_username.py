@@ -8,7 +8,6 @@ import info
 
 
 async def username_handler(message: types.Message, state: FSMContext):
-    # sourcery skip: use-named-expression
     user_name = message.text.lower()
     await state.update_data(user_name=user_name)
 
@@ -18,8 +17,7 @@ async def username_handler(message: types.Message, state: FSMContext):
 
         await welcome(message, user_name)
 
-        titles = info.get_titles(user_name)
-        if titles:
+        if titles := info.get_titles(user_name):
             await follow_games_handler(message, ', '.join(titles))
             await UserState.next()
         else:
