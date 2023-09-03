@@ -49,7 +49,7 @@ def update_follows(user_id, games_user_follows):
         db.commit()
 
 
-def check_user_existence(user_id) -> bool:
+def check_user_existence(user_id):
     with sq.connect("data.db") as db:
         cursor = db.cursor()
 

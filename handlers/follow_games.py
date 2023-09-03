@@ -2,7 +2,6 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from sqlite import update_follows
-import info
 
 def show_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
