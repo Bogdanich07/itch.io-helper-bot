@@ -10,3 +10,5 @@ TOKEN = os.getenv("TOKEN")
 
 class UserState(StatesGroup):
     user_name = State()
+    add_games = State()
+    follow_games = State()

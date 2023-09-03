@@ -1,5 +1,5 @@
-import requests
 from bs4 import BeautifulSoup
+import requests
 
 
 def check_username(user_name):
