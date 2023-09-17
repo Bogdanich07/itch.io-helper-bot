@@ -1,5 +1,5 @@
 import sqlite3 as sq
-
+import json
 
 def create_table():
     """Create a "users" table in "data.db" if it doesn't exist"""
@@ -9,8 +9,7 @@ def create_table():
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                user_id INTEGER,
+                user_id PRIMARY KEY,
                 user_name TEXT,
                 games_user_follows TEXT
             )
@@ -18,6 +17,20 @@ def create_table():
         )
         db.commit()
 
+
+def read_table():
+    with sq.connect("data.db") as db:
+        cursor = db.cursor()
+        cursor.execute("""SELECT * from users""")
+        users = cursor.fetchall()
+        table = {}
+        for user in users:
+            try:
+                table[user[0]] = json.loads(user[2])
+            except:
+                continue
+            
+        return table
 
 def insert_user(user_id, user_name, games_user_follows=None):
     with sq.connect("data.db") as db:
@@ -56,4 +69,4 @@ def check_user_existence(user_id):
         cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
         result = cursor.fetchone()
 
-    return result is not None
+    return result

@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import json
 
 
 def check_username(user_name):
@@ -8,7 +9,7 @@ def check_username(user_name):
     return response.status_code != 404
 
 
-def get_post_date(game_url):
+def get_last_update(game_url):
     response = requests.get(game_url)
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -38,3 +39,42 @@ def get_titles(user_name):
         games.append(tag.a.get_text())
 
     return games
+
+
+def get_devlog(game_url):
+    response = requests.get(game_url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    a_tag = soup.find("section", class_="game_devlog").find("a")
+    link = a_tag["href"]
+
+    return link
+
+
+class UpdateInfo:
+    def __init__(self, update_url):
+        self.response = requests.get(update_url)
+        self.soup = BeautifulSoup(self.response.text, "html.parser")
+
+    def get_likes_count(self):
+        likes_count_element = self.soup.find("div", class_="like_button_drop")[
+            "data-init"
+        ]
+        likes_count = json.loads(likes_count_element)
+
+        return str(likes_count["likes_count"])
+
+    def get_header(self):
+        h1_tag = self.soup.find("section", class_="post_header").find("h1")
+        header = h1_tag.get_text()
+
+        return header
+
+    def get_description(self):
+        strings = []
+        for tag in self.soup.find_all(
+            "section",
+            class_="object_text_widget_widget base_widget user_formatted post_body",
+        ):
+            strings.append(tag.get_text())
+
+        return strings
