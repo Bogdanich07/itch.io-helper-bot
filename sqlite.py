@@ -18,7 +18,7 @@ def create_table():
         db.commit()
 
 
-def read_table():
+async def read_table():
     with sq.connect("data.db") as db:
         cursor = db.cursor()
         cursor.execute("""SELECT * from users""")
@@ -32,7 +32,7 @@ def read_table():
             
         return table
 
-def insert_user(user_id, user_name, games_user_follows=None):
+async def insert_user(user_id, user_name, games_user_follows=None):
     with sq.connect("data.db") as db:
         cursor = db.cursor()
         cursor.execute(
@@ -42,7 +42,7 @@ def insert_user(user_id, user_name, games_user_follows=None):
         db.commit()
 
 
-def update_user_name(user_id, user_name):
+async def update_user_name(user_id, user_name):
     """Connect to "data.db" and update the username of a user based on their ID"""
     with sq.connect("data.db") as db:
         cursor = db.cursor()
@@ -52,7 +52,7 @@ def update_user_name(user_id, user_name):
         db.commit()
 
 
-def update_follows(user_id, games_user_follows):
+async def update_follows(user_id, games_user_follows):
     with sq.connect("data.db") as db:
         cursor = db.cursor()
         cursor.execute(
@@ -62,7 +62,7 @@ def update_follows(user_id, games_user_follows):
         db.commit()
 
 
-def check_user_existence(user_id):
+async def check_user_existence(user_id):
     with sq.connect("data.db") as db:
         cursor = db.cursor()
 

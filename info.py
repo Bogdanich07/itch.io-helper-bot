@@ -3,13 +3,13 @@ import requests
 import json
 
 
-def check_username(user_name):
+async def check_username(user_name):
     url = f"http://{user_name}.itch.io"
     response = requests.get(url)
     return response.status_code != 404
 
 
-def get_last_update(game_url):
+async def get_last_update(game_url):
     response = requests.get(game_url)
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -19,7 +19,7 @@ def get_last_update(game_url):
     return title
 
 
-def get_links(user_name):
+async def get_links(user_name):
     games = []
     response = requests.get(f"https://{user_name}.itch.io/")
     soup = BeautifulSoup(response.text, "html.parser")
@@ -30,7 +30,7 @@ def get_links(user_name):
     return games
 
 
-def get_titles(user_name):
+async def get_titles(user_name):
     games = []
     response = requests.get(f"https://{user_name}.itch.io/")
     soup = BeautifulSoup(response.text, "html.parser")
@@ -41,7 +41,7 @@ def get_titles(user_name):
     return games
 
 
-def get_devlog(game_url):
+async def get_devlog(game_url):
     response = requests.get(game_url)
     soup = BeautifulSoup(response.text, "html.parser")
     a_tag = soup.find("section", class_="game_devlog").find("a")

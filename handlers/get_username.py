@@ -11,25 +11,17 @@ async def username_handler(message: types.Message, state: FSMContext):
     user_name = message.text.lower()
     await state.update_data(user_name=user_name)
 
-    if info.check_username(user_name):
+    if await info.check_username(user_name):
         user_id = message.from_user.id
-        insert_user(user_id, user_name)
+        await insert_user(user_id, user_name)
 
-        await welcome(message, user_name)
-
-        if titles := info.get_titles(user_name):
-            await follow_games_handler(message, ', '.join(titles), user_name)
+        if titles := await info.get_titles(user_name):
+            await follow_games_handler(message, ", ".join(titles), user_name)
             await UserState.next()
         else:
             await empty_collection_handler(message)
     else:
         await invalid_username(message, user_name)
-
-
-async def welcome(message: types.Message, user_name: str):
-    await message.answer(
-        f"Nice to meet you {user_name}! Now you can follow games and creators 🥳"
-    )
 
 
 async def invalid_username(message: types.Message, user_name: str):
